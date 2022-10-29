@@ -1,40 +1,36 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const path = require('path');
-const app = express();
+// fetch(
+//   `https://shielded-bastion-43828.herokuapp.com/https://streamlabs.com/api/v1.0/donations?access_token=${message}`,
+//   options
+// )
+//   .then((response) => response.json())
+//   .then((response) => {
+//     console.log("response", response);
+//   })
+//   .catch((err) => console.error(err));
 
-const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+// let request = new XMLHttpRequest();
+// request.open("GET", `https://shielded-bastion-43828.herokuapp.com/https://streamlabs.com/api/v1.0/donations?access_token=3p9XMiyCYlkZQT28dUGjE1EjfpogTKediFp2xPxc`);
+// request.send();
+// request.onload = () => {
+//     console.log(request);
+//     if(request.status === 200){
+//         console.log(JSON.parse(request.response));
+//     }else {
+//         console.log(`error ${request.status} ${request.statusText}`)
+//     }
+// }
 
-app.set('port', PORT);
-app.set('env', NODE_ENV);
-
-app.use(logger('tiny'));
-app.use(bodyParser.json());
-
-app.use('/', require(path.join(__dirname, 'routes')));
-
-app.use((req, res, next) => {
-  const err = new Error(`${req.method} ${req.url} Not Found`);
-  err.status = 404;
-  next(err);
-});
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500);
-  res.json({
-    error: {
-      message: err.message,
-    },
+const https = require('https')
+const url = "https://streamlabs.com/api/v1.0/donations?access_token=3p9XMiyCYlkZQT28dUGjE1EjfpogTKediFp2xPxc";
+https.get(url, res => {
+  let data = '';
+  res.on('data', chunk => {
+    data += chunk;
   });
-});
-
-app.listen(PORT, () => {
-  console.log(
-    `Express Server started on Port ${app.get(
-      'port'
-    )} | Environment : ${app.get('env')}`
-  );
-});
+  res.on('end', () => {
+    data = JSON.parse(data);
+    console.log(data["data"][0]["amount"]);
+  })
+}).on('error', err => {
+  console.log(err.message);
+})
