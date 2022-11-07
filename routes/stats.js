@@ -4,9 +4,6 @@ const express = require("express");
 const router = express.Router();
 const getStats = async (req, res, next) => {
   let savedRespone;
-  let newResponse;
-  let oldRespone;
-  let intervalTime;
   const res2 = res
   // const options = { method: "GET", headers: { accept: "application/json" } };
   const https = require("https");
@@ -21,8 +18,10 @@ const getStats = async (req, res, next) => {
       res.on("end", () => {
         data = JSON.parse(data);
         savedRespone = data["data"][0];
-        console.log(savedRespone);
-        res2.json(savedRespone);
+        let newResponse = savedRespone.donation_id + "," + savedRespone.amount;
+        console.log(savedRespone.donation_id);
+        console.log(savedRespone.amount);
+        res2.json(newResponse);
       });
     })
     .on("error", (err) => {
